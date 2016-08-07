@@ -1,0 +1,25 @@
+#include<algorithm>
+
+#include"cxfilereader.h"
+
+#define MIN_BUF_SIZE 16
+
+CXFileReader::CXFileReader(FILE *aFile, int aBufSize) : mFile(aFile) {
+    mBufSize = std::max(MIN_BUF_SIZE, aBufSize);
+    mBuf = new char[mBufSize];
+    mPos = mBuf + mBufSize;
+}
+
+
+char CXFileReader::next(){
+    if(mPos == mBuf + mBufSize && !readNext())
+        return 0;
+    return *mPos++;
+}
+
+
+bool CXFileReader::readNext(){
+    auto s = fread(mBuf, 1, mBufSize, mFile);
+    mPos = mBuf;
+    return s != 0;
+}
