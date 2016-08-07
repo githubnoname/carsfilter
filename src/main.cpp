@@ -109,5 +109,8 @@ int main(int argc, char **argv){
     for(auto const &c : cars)
         printCar(c);
 
+    for(auto &f : filters)
+        delete f;
+
     return 0;
 }

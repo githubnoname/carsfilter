@@ -122,6 +122,7 @@ struct le{
 class AXCmp{
 public:
     virtual bool cmp(SXCar const &aCar) const = 0;
+    virtual ~AXCmp(){ }
 };
 
 
@@ -173,6 +174,7 @@ AXCmp *make_cmp(std::string const &aOp, std::string const &aValue){
 class AXFilter{
 public:
     virtual AXCmp *getCmp() const = 0;
+    virtual ~AXFilter(){ }
 };
 
 template<efield TField>
@@ -181,6 +183,10 @@ public:
     CXFilterT(std::string const &aOp, std::string const &aValue) : mCmp(make_cmp<TField>(aOp, aValue)){ }
     AXCmp *getCmp() const override {
         return mCmp;
+    }
+
+    ~CXFilterT(){
+        delete mCmp;
     }
 
 private:
