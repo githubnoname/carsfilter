@@ -7,19 +7,21 @@
 CXFileReader::CXFileReader(FILE *aFile, int aBufSize) : mFile(aFile) {
     mBufSize = std::max(MIN_BUF_SIZE, aBufSize);
     mBuf = new char[mBufSize];
-    mPos = mBuf + mBufSize;
+    mPos = mBuf;
 }
 
 
 char CXFileReader::next(){
-    if(mPos == mBuf + mBufSize && !readNext())
+    if(mPos == mBuf + mActualSize && !readNext())
         return 0;
     return *mPos++;
 }
 
 
 bool CXFileReader::readNext(){
-    auto s = fread(mBuf, 1, mBufSize, mFile);
+    mActualSize = fread(mBuf, 1, mBufSize, mFile);
+    if(mActualSize == 0)
+        return false;
     mPos = mBuf;
-    return s != 0;
+    return true;
 }

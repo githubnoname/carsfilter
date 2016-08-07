@@ -4,7 +4,8 @@ CXX = g++ -std=c++11 -Wall -Wextra -pedantic -O2 -g
 LINK = g++ -std=c++11
 
 # bins sources
-CARSFILTER_SRC = src/main.cpp src/carstorage.cpp src/cxfilereader.cpp
+CARSFILTER_SRC = src/carsfilter.cpp src/carstorage.cpp src/cxfilereader.cpp src/cxparser.cpp
+CARSGEN_SRC = src/carsgen.cpp src/cxgen.cpp src/cxrandom.cpp
 
 # tests sources
 READERSTEST_SRC = src/cxfilereader.cpp src/cxstringreader.cpp src/readers_test.cpp
@@ -19,12 +20,15 @@ space = $(noop) $(noop)
 all: build
 
 clean:
-	rm -f objs/* bin/carsfilter
+	rm -f objs/* bin/*
 
-build: bin/carsfilter
+build: bin/carsfilter bin/carsgen
 
 bin/carsfilter: ${CARSFILTER_SRC:src/%.cpp=objs/%.d} ${CARSFILTER_SRC:src/%.cpp=objs/%.o}
 	${LINK} ${CARSFILTER_SRC:src/%.cpp=objs/%.o} -o $@
+
+bin/carsgen: ${CARSGEN_SRC:src/%.cpp=objs/%.d} ${CARSGEN_SRC:src/%.cpp=objs/%.o}
+	${LINK} ${CARSGEN_SRC:src/%.cpp=objs/%.o} -o $@
 
 bin/test_readers: ${READERSTEST_SRC:src/%.cpp=objs/%.d} ${READERSTEST_SRC:src/%.cpp=objs/%.o}
 	${LINK} ${READERSTEST_SRC:src/%.cpp=objs/%.o} -o $@
@@ -37,8 +41,8 @@ check: ${TESTS}
 
 
 objs/%.d: src/%.cpp
-	@g++ $< -MM -MT $@ > $@
-	@g++ $< -MM -MT objs/$*.o >> $@
+	@g++ -std=c++11 $< -MM -MT $@ > $@
+	@g++ -std=c++11 $< -MM -MT objs/$*.o >> $@
 
 objs/%.o: src/%.cpp
 	${CXX} -c $< -o $@

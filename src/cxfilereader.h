@@ -18,6 +18,7 @@ private:
     char const *mPos;
     char *mBuf;
     int mBufSize;
+    int mActualSize;
 };
 
 #endif

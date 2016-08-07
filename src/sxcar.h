@@ -4,6 +4,7 @@
 #include<string>
 #include<limits>
 #include<cmath>
+#include<stdio.h>
 
 struct SXCar{
     inline SXCar(std::string const &aBrand, std::string const &aModel, int aYear, double aPrice):
@@ -18,6 +19,15 @@ struct SXCar{
 
     bool operator!=(SXCar const &aCar){
         return !(*this == aCar);
+    }
+
+    void print(FILE* aOut){
+        fprintf(aOut, "%s,%s,%d,%f", mBrand.c_str(), mModel.c_str(), mYear, mPrice);
+    }
+
+    void println(FILE *aOut){
+        print(aOut);
+        fprintf(aOut, "\n");
     }
 
     std::string mBrand;

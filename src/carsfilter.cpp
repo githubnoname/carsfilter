@@ -4,43 +4,32 @@
 #include<string.h>
 
 #include"filters.h"
+#include"cxparser.h"
+#include"cxfilereader.h"
 
-void printCar(SXCar const &aCar){
-    printf("%s %s, %d year - $%f\n", aCar.mBrand.c_str(), aCar.mModel.c_str(), aCar.mYear, aCar.mPrice);
-}
-
-template<typename T, typename Tf>
-void remove_if_not(std::list<T> &list, Tf pred){
-    list.remove_if([&](T const &x){ return !pred(x); });
-}
-
-template<typename TContainer, typename TValue>
-bool contains(TContainer const &aSeq, TValue const &aValue){
-    return std::find(aSeq.begin(), aSeq.end(), aValue) != aSeq.end();
-}
-
-
-void filterCars(std::list<SXCar> &aCars, std::list<AXFilter*> const &aFilters){
-    using namespace std::placeholders;
-    remove_if_not(aCars, [&](SXCar const &car){
-            return std::all_of(aFilters.begin(), aFilters.end(), [&](AXFilter *filter){
-                    return filter->getCmp()->cmp(car);
-                });
+static void filter(CXParser *aParser, FILE *aOut, std::list<AXFilter*> aFilters){
+    std::list<AXCmp*> comparators;
+    std::transform(aFilters.begin(), aFilters.end(), std::back_inserter(comparators), [](AXFilter *f){
+            return f->getCmp();
         });
+    while(auto car = aParser->next()){
+        if(std::all_of(comparators.begin(), comparators.end(), [&](AXCmp *cmp){
+                    return cmp->cmp(*car);
+                }))
+            car->println(aOut);
+    }
 }
 
+static char const *ARGV0 = "";
 
-char const *ARGV0 = "";
-
-
-int help(FILE *out=stdout){
+static int help(FILE *out=stdout){
     fprintf(out, "Usage:\n");
     fprintf(out, "    %s [-f <file>] [-o <file>] [-l <num>] [-h] [FILTER [AND FILTER [...]]]\n", ARGV0);
     fprintf(out, "\nOptions:\n");
-    fprintf(out, "    -h            Print this message\n");
-    fprintf(out, "    -f <file>     Read cars info from specified file. Default is stdin.\n");
-    fprintf(out, "    -o <file>     Write cars info to specified file. Default is stdout.\n");
-    fprintf(out, "    -l <num>      Read just <num> cars from input. -1 means unlimited, it is default.\n");
+    fprintf(out, "    -h           Print this message\n");
+    fprintf(out, "    -f <file>    Read cars info from specified file. Default is stdin.\n");
+    fprintf(out, "    -o <file>    Write cars info to specified file. Default is stdout.\n");
+    fprintf(out, "    -l <num>     Read just <num> cars from input. -1 means unlimited, it is default.\n");
     fprintf(out, "\nFilter format:\n");
     fprintf(out, "    filter = field operation value]\n");
     fprintf(out, "    field = brand | model | issued | price\n");
@@ -54,7 +43,7 @@ int help(FILE *out=stdout){
 }
 
 
-int error(char const *str, bool needHelp=false){
+static int error(char const *str, bool needHelp=false){
     fprintf(stderr, "%s\n", str);
     if(needHelp)
         help(stderr);
@@ -98,16 +87,8 @@ int main(int argc, char **argv){
             return error("Wrong format", true);
     }
 
-    cars = loadCars("");
-
-    for(auto const &c : cars)
-        printCar(c);
-
-    filterCars(cars, filters);
-
-    printf("\n---\n");
-    for(auto const &c : cars)
-        printCar(c);
+    CXParser p(new CXFileReader(fin));
+    filter(&p, fout, filters);
 
     for(auto &f : filters)
         delete f;
