@@ -1,12 +1,16 @@
 #ifndef SXFIELDINFO
 #define SXFIELDINFO
 
+#include<list>
+#include<string>
+
 #include"sxcar.h"
 
 
 enum efield { F_BRAND, F_MODEL, F_YEAR, F_PRICE };
 
-// SXCar's filed extractor
+
+// SXCar's field extractor
 
 template<efield TField>
 struct SXFieldInfo{ };
@@ -17,6 +21,7 @@ struct SXFieldInfo<F_BRAND>{
     inline std::string get(SXCar const &aCar) const {
         return aCar.mBrand;
     }
+    std::list<std::string> ops() const { return { "==" }; }
 };
 
 template<>
@@ -25,6 +30,7 @@ struct SXFieldInfo<F_MODEL>{
     inline std::string get(SXCar const &aCar) const {
         return aCar.mModel;
     }
+    std::list<std::string> ops() const { return { }; }
 };
 
 template<>
@@ -33,6 +39,7 @@ struct SXFieldInfo<F_YEAR>{
     inline int get(SXCar const &aCar) const {
         return aCar.mYear;
     }
+    std::list<std::string> ops() const { return { "==", "!=", ">", ">=", "<", "<=" }; }
 };
 
 template<>
@@ -41,7 +48,7 @@ struct SXFieldInfo<F_PRICE>{
     inline double get(SXCar const &aCar) const {
         return aCar.mPrice;
     }
+    std::list<std::string> ops() const { return { ">", "<" }; }
 };
-
 
 #endif

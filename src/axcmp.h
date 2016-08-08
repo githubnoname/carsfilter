@@ -13,6 +13,7 @@ class AXCmp{
 public:
     virtual bool cmp(SXCar const &aCar) const = 0;
     virtual bool cmp(SXCar const &aCarLeft, SXCar const &aCarRight) const = 0;
+    virtual bool isOperationSupported(std::string const &aOp) const = 0;
     virtual ~AXCmp(){ }
 };
 

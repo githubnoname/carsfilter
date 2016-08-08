@@ -32,8 +32,12 @@ public:
     }
 
     CXPipeFilter *addFilter(std::string const &aField, std::string const &aOp, std::string const &aValue){
-        if(auto cmp = make_axcmp(aField, aOp, aValue))
-            return addFilter(cmp);
+        if(auto cmp = make_axcmp(aField, aOp, aValue)){
+            if(cmp->isOperationSupported(aOp))
+                return addFilter(cmp);
+            else
+                delete cmp;
+        }
         return 0;
     }
 

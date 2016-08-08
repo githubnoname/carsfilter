@@ -1,3 +1,5 @@
+#include<algorithm>
+
 #include"axcmp.h"
 #include"sxfieldinfo.h"
 #include"utils.h"
@@ -59,6 +61,11 @@ public:
     }
     inline bool cmp(SXCar const &aCarLeft, SXCar const &aCarRight) const override {
         return mCmp(SXFieldInfo<TField>().get(aCarLeft), SXFieldInfo<TField>().get(aCarRight));
+    }
+
+    inline bool isOperationSupported(std::string const &aOp)const override {
+        auto sup = SXFieldInfo<TField>().ops();
+        return std::find(sup.begin(), sup.end(), aOp) != sup.end();
     }
 
 private:

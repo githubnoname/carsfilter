@@ -43,6 +43,12 @@ static int error(char const *str, bool needHelp=false){
 }
 
 
+// Creates filters directly in the pipeline
+// Groups sorters in the intermediate multi-key sorter
+// Applies sorter to the end of pipeline
+// Applies printer to the end of pipeline
+// Reads cars from parser and process them one by one in the pipeline
+
 int main(int argc, char **argv){
     ARGV0 = argv[0];
     FILE *fout = stdout;
