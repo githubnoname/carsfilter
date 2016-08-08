@@ -6,7 +6,7 @@
 #include"cxpipefilter.h"
 #include"cxpipesorter.h"
 #include"cxpipeprinter.h"
-#include"filters.h"
+#include"axcmp.h"
 
 class CXPipeline{
 public:
@@ -28,7 +28,7 @@ public:
     }
 
     CXPipeFilter *addFilter(std::string const &aField, std::string const &aOp, std::string const &aValue){
-        if(auto cmp = make_filter(aField, aOp, aValue))
+        if(auto cmp = make_axcmp(aField, aOp, aValue))
             return addFilter(cmp);
         return 0;
     }

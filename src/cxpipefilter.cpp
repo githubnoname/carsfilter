@@ -1,5 +1,5 @@
 #include"cxpipefilter.h"
-#include"filters.h"
+#include"axcmp.h"
 
 
 CXPipeFilter::~CXPipeFilter(){

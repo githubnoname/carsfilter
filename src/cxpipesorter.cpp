@@ -2,7 +2,7 @@
 #include<algorithm>
 
 #include"cxpipesorter.h"
-#include"filters.h"
+#include"axcmp.h"
 
 
 CXPipeSorter::~CXPipeSorter(){
@@ -14,8 +14,8 @@ CXPipeSorter::~CXPipeSorter(){
 
 
 bool CXPipeSorter::addSortRule(std::string const &aField, std::string const &aOp){
-    auto cmp1 = make_filter(aField, aOp, "");
-    auto cmp2 = make_filter(aField, "==", "");
+    auto cmp1 = make_axcmp(aField, aOp, "");
+    auto cmp2 = make_axcmp(aField, "==", "");
     if(cmp1 == 0 || cmp2 == 0){
         delete cmp1;
         delete cmp2;
