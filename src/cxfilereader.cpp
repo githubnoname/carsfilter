@@ -8,6 +8,12 @@ CXFileReader::CXFileReader(FILE *aFile, int aBufSize) : mFile(aFile) {
     mBufSize = std::max(MIN_BUF_SIZE, aBufSize);
     mBuf = new char[mBufSize];
     mPos = mBuf;
+    mActualSize = 0;
+}
+
+
+CXFileReader::~CXFileReader(){
+    delete mBuf;
 }
 
 

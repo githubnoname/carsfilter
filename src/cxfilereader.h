@@ -8,6 +8,7 @@
 class CXFileReader : public AXReader{
 public:
     CXFileReader(FILE *aFile, int aBufSize = 1024);
+    ~CXFileReader();
 
     char next() override;
 

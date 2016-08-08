@@ -117,11 +117,13 @@ struct le{
 
 
 // Comparator. It uses callable operator to compare given value with SXCar's field.
-// Use appropriated type to store value, i.e. doesn't convert value per each comparasion.
+// It uses appropriated type to store value, i.e. doesn't convert value per each comparasion.
+// The second options is to compare two SXCars.
 
 class AXCmp{
 public:
     virtual bool cmp(SXCar const &aCar) const = 0;
+    virtual bool cmp(SXCar const &aCarLeft, SXCar const &aCarRight) const = 0;
     virtual ~AXCmp(){ }
 };
 
@@ -132,6 +134,9 @@ public:
     inline CXCmpT(TFunc aCmp, std::string const &aValue) : mCmp(aCmp), mValue(from_string<Type>(aValue)){ }
     inline bool cmp(SXCar const &aCar) const override {
         return mCmp(SXFieldInfo<TField>().get(aCar), mValue);
+    }
+    inline bool cmp(SXCar const &aCarLeft, SXCar const &aCarRight) const override {
+        return mCmp(SXFieldInfo<TField>().get(aCarLeft), SXFieldInfo<TField>().get(aCarRight));
     }
 
 private:
@@ -169,43 +174,23 @@ AXCmp *make_cmp(std::string const &aOp, std::string const &aValue){
 }
 
 
-// Field filters
-
-class AXFilter{
-public:
-    virtual AXCmp *getCmp() const = 0;
-    virtual ~AXFilter(){ }
-};
-
-template<efield TField>
-class CXFilterT : public AXFilter{
-public:
-    CXFilterT(std::string const &aOp, std::string const &aValue) : mCmp(make_cmp<TField>(aOp, aValue)){ }
-    AXCmp *getCmp() const override {
-        return mCmp;
-    }
-
-    ~CXFilterT(){
-        delete mCmp;
-    }
-
-private:
-    AXCmp *mCmp;
-};
-
-
-// Filters factory.
-
-AXFilter *make_filter(std::string const &aField, std::string const &aOp, std::string const &aValue){
+AXCmp *make_filter(std::string const &aField, std::string const &aOp, std::string const &aValue){
     if(aField == "brand")
-        return new CXFilterT<F_BRAND>(aOp, aValue);
+        return make_cmp<F_BRAND>(aOp, aValue);
     else if(aField == "model")
-        return new CXFilterT<F_MODEL>(aOp, aValue);
+        return make_cmp<F_MODEL>(aOp, aValue);
     else if(aField == "issued")
-        return new CXFilterT<F_YEAR>(aOp, aValue);
+        return make_cmp<F_YEAR>(aOp, aValue);
     else if(aField == "price")
-        return new CXFilterT<F_PRICE>(aOp, aValue);
+        return make_cmp<F_PRICE>(aOp, aValue);
     return 0;
+}
+
+
+inline bool match(SXCar const &aCar, std::list<AXCmp*> const &aFilters){
+return std::all_of(aFilters.begin(), aFilters.end(), [&](AXCmp *cmp){
+        return cmp->cmp(aCar);
+    });
 }
 
 #endif
