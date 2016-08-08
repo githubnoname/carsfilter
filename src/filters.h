@@ -2,8 +2,69 @@
 #define FILTERS
 
 #include<functional>
+#include<algorithm>
+#include<list>
 
-#include"carstorage.h"
+#include"sxcar.h"
+
+class CXParser;
+class AXFilterProc;
+class AXCmp;
+
+
+class CXFilter{
+public:
+    ~CXFilter();
+
+    bool addComparison(std::string const &aField, std::string const &aOp, std::string const &aValue);
+    void run(CXParser *aParser, AXFilterProc *aProc);
+
+private:
+    std::list<AXCmp*> mCmps;
+};
+
+
+class AXFilterProc{
+public:
+    virtual void processCar(SXCar *aCar) = 0;
+    virtual ~AXFilterProc(){ }
+};
+
+
+// An optimized version of processing after filtering. Just print filtered car.
+// Process cars one by one.
+class CXPrinterProc : public AXFilterProc{
+public:
+    CXPrinterProc(FILE *aOut) : mOut(aOut){ }
+    void processCar(SXCar *aCar) override;
+
+private:
+    FILE *mOut;
+};
+
+
+// A version of processing with sorting.
+// Keeps all sorted cars in the memory. Print them before destroying.
+class CXSortProc : public AXFilterProc{
+public:
+    CXSortProc(FILE *aOut) : mOut(aOut){ }
+    void processCar(SXCar *aCar) override;
+    bool addSortRule(std::string const &aField, std::string const &aOp);
+
+    ~CXSortProc();
+
+private:
+    struct SXMultiSort{
+        AXCmp *mBase;
+        AXCmp *mEq;
+    };
+    bool multiKeyCmp(SXCar const *aCar1, SXCar const *aCar2);
+
+    std::list<SXMultiSort> mSorts;
+    std::vector<SXCar*> mSortedCars;
+    FILE *mOut;
+};
+
 
 enum eop { OP_EQ, OP_NE, OP_GT, OP_LT };
 enum efield { F_BRAND, F_MODEL, F_YEAR, F_PRICE };
@@ -23,12 +84,12 @@ inline std::string from_string(std::string const &aStr){
 
 template<>
 inline int from_string(std::string const &aStr){
-    return std::stoi(aStr);
+    return atoi(aStr.c_str());
 }
 
 template<>
 inline double from_string(std::string const &aStr){
-    return std::stod(aStr);
+    return atof(aStr.c_str());
 }
 
 
@@ -117,7 +178,7 @@ struct le{
 
 
 // Comparator. It uses callable operator to compare given value with SXCar's field.
-// It uses appropriated type to store value, i.e. doesn't convert value per each comparasion.
+// It uses appropriated type to store value, i.e. doesn't convert value per each comparison.
 // The second options is to compare two SXCars.
 
 class AXCmp{
@@ -174,23 +235,13 @@ AXCmp *make_cmp(std::string const &aOp, std::string const &aValue){
 }
 
 
-AXCmp *make_filter(std::string const &aField, std::string const &aOp, std::string const &aValue){
-    if(aField == "brand")
-        return make_cmp<F_BRAND>(aOp, aValue);
-    else if(aField == "model")
-        return make_cmp<F_MODEL>(aOp, aValue);
-    else if(aField == "issued")
-        return make_cmp<F_YEAR>(aOp, aValue);
-    else if(aField == "price")
-        return make_cmp<F_PRICE>(aOp, aValue);
-    return 0;
-}
+AXCmp *make_filter(std::string const &aField, std::string const &aOp, std::string const &aValue);
 
 
 inline bool match(SXCar const &aCar, std::list<AXCmp*> const &aFilters){
-return std::all_of(aFilters.begin(), aFilters.end(), [&](AXCmp *cmp){
-        return cmp->cmp(aCar);
-    });
+    return std::all_of(aFilters.begin(), aFilters.end(), [&](AXCmp *cmp){
+            return cmp->cmp(aCar);
+        });
 }
 
 #endif

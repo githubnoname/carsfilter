@@ -1,79 +1,9 @@
 #include<stdio.h>
-#include<algorithm>
-#include<functional>
 #include<string.h>
 
 #include"filters.h"
 #include"cxparser.h"
 #include"cxfilereader.h"
-#include"utils.h"
-
-
-// Optimized version of filtering without sorting. Filter data line by line.
-static void filter(CXParser *aParser, FILE *aOut, std::list<AXCmp*> const &aFilters){
-    while(auto car = aParser->next()){
-        if(match(*car, aFilters))
-            car->println(aOut);
-        delete car;
-    }
-}
-
-
-// In multi-key sorting, we have to do two compares per each cars fields.
-// First one is the usual, second one is eqaulity check to start compare by next key.
-//
-// e.g. first sort key is price asc, second one is issuance date desc
-// 1: usual comparation (price)
-// 2: equality comparation (price)
-// 3: comparation by second key (issuance date)
-//
-//        compare(car1. car2):
-// /* 1 */    if car1.mPrice > car2.mPrice then
-//                return true
-// /* 2 */    if car1.mPrice == car2.mPrice then
-// /* 3 */        return car1.mYear < car2.mYear
-//            return false;
-struct SXMultiSort{
-    AXCmp *mBase;
-    AXCmp *mEq;
-    // ~SXMultiSort(){
-    //     printf("delete %p %p\n", mBase, mEq);
-    //     delete mBase;
-    //     delete mEq;
-    // }
-};
-
-
-bool multiKeyCmp(SXCar const aCar1, SXCar const &aCar2, std::list<SXMultiSort> aCmps){
-    if(aCmps.empty())
-        return false;
-    if(aCmps.front().mBase->cmp(aCar1, aCar2))
-        return true;
-    if(aCmps.size() > 1 && aCmps.front().mEq->cmp(aCar1, aCar2)){
-        aCmps.pop_front();
-        return multiKeyCmp(aCar1, aCar2, aCmps);
-    }
-    return false;
-}
-
-
-// Filtering and sorting. Load all filtered cars in memory, sort, and print.
-static void filterAndSort(CXParser *aParser, FILE *aOut, std::list<AXCmp*> const &aFilters, std::list<SXMultiSort> aSorts){
-    std::vector<SXCar*> cars;
-    while(auto car = aParser->next()){
-        if(match(*car, aFilters)){
-            sorted_insert(cars, car, [&](SXCar *a, SXCar *b) -> bool {
-                    return multiKeyCmp(*a, *b, aSorts);
-                });
-        }
-        else
-            delete car;
-    }
-    for(auto &car : cars){
-        car->println(aOut);
-        delete car;
-    }
-}
 
 
 static char const *ARGV0 = "";
@@ -111,13 +41,12 @@ static int error(char const *str, bool needHelp=false){
 
 int main(int argc, char **argv){
     ARGV0 = argv[0];
-    std::list<SXCar> cars;
-    std::list<AXCmp*> filters;
-    std::list<SXMultiSort> sorts;
     FILE *fout = stdout;
     FILE *fin = stdin;
-    bool filter_continue = false;
+    CXFilter filter;
+    std::list<std::pair<std::string, std::string>> sorts;
 
+    bool filter_continue = true;
     for(int i = 1; i < argc; i++){
         if(strcmp(argv[i], "-h") == 0)
             return help();
@@ -130,17 +59,18 @@ int main(int argc, char **argv){
                 return error("Cannot open output file for writing");
         }
         else if(strcmp(argv[i], "--asc") == 0 && argc > i + 1)
-            sorts.push_back({ make_filter(argv[++i], "<", "0"),
-                              make_filter(argv[i], "==", "0") });
+            sorts.push_back({ argv[++i], "<" });
         else if(strcmp(argv[i], "--desc") == 0 && argc > i + 1)
-            sorts.push_back({ make_filter(argv[++i], ">", "0"),
-                              make_filter(argv[i], "==", "0") });
-        else if(argc > i + 2 && (filters.size() == 0 || filter_continue)){
+            sorts.push_back({ argv[++i], ">" });
+        else if(argc > i + 2 && filter_continue){
             filter_continue = false;
             auto field = argv[i];
             auto op = argv[++i];
             auto value = argv[++i];
-            filters.push_back(make_filter(field, op, value));
+            if(!filter.addComparison(field, op, value)){
+                fprintf(stderr, ">>>  %s %s %s <<<\n", field, op, value);
+                return error("Error in filter, check field name and its supported operations");
+            }
             if(argc > i + 1){
                 if(strcmp(argv[i + 1], "AND") == 0){
                     i++;
@@ -152,15 +82,19 @@ int main(int argc, char **argv){
             return error("Wrong format", true);
     }
 
-    CXParser p(new CXFileReader(fin));
+    AXFilterProc *proc = 0;
 
-    if(sorts.size() == 0)
-        filter(&p, fout, filters);
+    if(sorts.size() != 0){
+        auto sorter = new CXSortProc(fout);
+        for(auto const &s : sorts)
+            if(!sorter->addSortRule(s.first, s.second))
+                return error("Error in sort rule, check field name");
+        proc = sorter;
+    }
     else
-        filterAndSort(&p, fout, filters, sorts);
+        proc = new CXPrinterProc(fout);
 
-    for(auto &f : filters)
-        delete f;
+    filter.run(new CXParser(new CXFileReader(fin)), proc);
 
     return 0;
 }

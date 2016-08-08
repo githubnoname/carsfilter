@@ -4,7 +4,7 @@ CXX = g++ -std=c++11 -Wall -Wextra -pedantic -O2 -g
 LINK = g++ -std=c++11
 
 # bins sources
-CARSFILTER_SRC = src/carsfilter.cpp src/carstorage.cpp src/cxfilereader.cpp src/cxparser.cpp
+CARSFILTER_SRC = src/carsfilter.cpp src/cxfilereader.cpp src/cxparser.cpp src/filters.cpp
 CARSGEN_SRC = src/carsgen.cpp src/cxgen.cpp src/cxrandom.cpp
 
 # tests sources
