@@ -8,6 +8,10 @@
 #include"cxpipeprinter.h"
 #include"axcmp.h"
 
+
+// Pipeline helps to manage jobs in the pipe.
+//
+
 class CXPipeline{
 public:
     CXPipeline() : mHead(0), mTail(0), mSorter(0){ }

@@ -30,6 +30,7 @@ static int help(FILE *out=stdout){
     fprintf(out, "    Value is value to compare with.\n");
     fprintf(out, "\n");
     fprintf(out, "All sorting options are combined into a multi key sorting rule, that applies after filters\n");
+    fprintf(out, "This mean, this kind of sorting groups the result by primary keys.\n");
     return 0;
 }
 
@@ -91,5 +92,7 @@ int main(int argc, char **argv){
         pipeline.head()->processCar(car);
     } while(car != 0);
 
+    fclose(fin);
+    fclose(fout);
     return 0;
 }

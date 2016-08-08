@@ -5,7 +5,7 @@
 
 class AXPipeJob{
 public:
-    AXPipeJob(AXPipeJob *aParent = 0){
+    AXPipeJob(AXPipeJob *aParent = 0) : mNext(0){
         if(aParent != 0)
             aParent->setNext(this);
     }

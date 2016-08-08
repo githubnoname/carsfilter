@@ -13,7 +13,7 @@ CXFileReader::CXFileReader(FILE *aFile, int aBufSize) : mFile(aFile) {
 
 
 CXFileReader::~CXFileReader(){
-    delete mBuf;
+    delete[] mBuf;
 }
 
 
