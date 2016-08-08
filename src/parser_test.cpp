@@ -22,9 +22,9 @@ static bool cmp(CXParser *aParser, std::list<SXCar*> const &aExpected){
 }
 
 
-static std::string const input = "Lada,Granta,2010,7000.42\n\
-BMW,X5,2015,50000\n\
-,,100\n\
+static std::string const input = "Lada;Granta;2010;7000.42\n\
+BMW;X5;2015;50000\n\
+;;100\n\
 \n\
 ";
 

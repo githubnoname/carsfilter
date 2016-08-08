@@ -14,10 +14,10 @@ static void store(int aState, SXCar **aCar, std::string const &aValue){
         car->mModel = aValue;
         break;
     case YEAR:
-        car->mYear = std::stoi(aValue);
+        car->mYear = atoi(aValue.c_str());
         break;
     case PRICE:
-        car->mPrice = std::stod(aValue);
+        car->mPrice = atof(aValue.c_str());
         break;
     }
 }
@@ -35,7 +35,7 @@ SXCar *CXParser::next(){
     int state = BRAND;
     while(auto c = mReader->next()){
         switch(c){
-        case ',':
+        case ';':
             store(state, &car, tail);
             tail = "";
             ++state;

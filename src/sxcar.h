@@ -22,7 +22,7 @@ struct SXCar{
     }
 
     void print(FILE* aOut){
-        fprintf(aOut, "%s,%s,%d,%f", mBrand.c_str(), mModel.c_str(), mYear, mPrice);
+        fprintf(aOut, "%s;%s;%d;%f", mBrand.c_str(), mModel.c_str(), mYear, mPrice);
     }
 
     void println(FILE *aOut){
