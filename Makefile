@@ -8,8 +8,8 @@ CARSFILTER_SRC = src/carsfilter.cpp src/cxfilereader.cpp src/cxparser.cpp src/ax
 CARSGEN_SRC = src/carsgen.cpp src/cxgen.cpp src/cxrandom.cpp
 
 # tests sources
-READERSTEST_SRC = src/cxfilereader.cpp src/cxstringreader.cpp src/readers_test.cpp
-PARSERTEST_SRC = src/parser_test.cpp src/cxparser.cpp src/cxstringreader.cpp
+READERSTEST_SRC = src/cxfilereader.cpp src/readers_test.cpp
+PARSERTEST_SRC = src/parser_test.cpp src/cxparser.cpp
 
 TESTS = bin/test_readers bin/test_parser
 

@@ -4,12 +4,15 @@
 #include"sxcar.h"
 #include"cxgen.h"
 
+
+// Utility for cars generation.
+
 static char const *ARGV0 = "";
 
 static int help(FILE *out=stdout){
     fprintf(out, "\
 Usage:\n\
-    %s [-o <file>] [-l num]\n\
+    %s [-h] [-o <file>] [-l num]\n\
 \n\
 Options:\n\
     -h           Print this message\n\
@@ -25,9 +28,6 @@ static int error(char const *str, bool needHelp=false){
         help(stderr);
     return 1;
 }
-
-
-
 
 
 static void gen(FILE *out, int limit){

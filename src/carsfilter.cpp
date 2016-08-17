@@ -6,6 +6,8 @@
 #include"cxpipeline.h"
 
 
+// Utility for filtering and sorting cars
+
 static char const *ARGV0 = "";
 
 static int help(FILE *out=stdout){

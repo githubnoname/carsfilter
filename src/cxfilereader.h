@@ -5,6 +5,7 @@
 
 #include"axreader.h"
 
+
 class CXFileReader : public AXReader{
 public:
     CXFileReader(FILE *aFile, int aBufSize = 1024);

@@ -4,6 +4,7 @@
 #include"sxfieldinfo.h"
 #include"utils.h"
 
+
 // Callable operators
 
 namespace {
@@ -51,6 +52,8 @@ namespace {
     };
 }
 
+
+// Encapsulates car field and operation
 
 template<efield TField, typename TFunc>
 class CXCmpT : public AXCmp{

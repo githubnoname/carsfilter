@@ -13,7 +13,7 @@
         return false; }                                                 \
     while(0)
 
-bool test_func(std::string const &aDesc, std::function<bool()> aFunc){
+inline bool test_func(std::string const &aDesc, std::function<bool()> aFunc){
     auto result = aFunc();
     printf("%s - %s\n", aDesc.c_str(), result ? "OK" : "FAILED");
     return result;

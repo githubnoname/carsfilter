@@ -3,6 +3,13 @@
 
 #include"axpipejob.h"
 
+
+// In terms of pipes this pipejob accepts a car, match it, and if successful sends it down the pipe.
+// Otherwise, deletes car and doesn't send down.
+
+// Filters cars by one condition
+// Many condtions -> many filters in the pipe.
+
 class AXCmp;
 
 

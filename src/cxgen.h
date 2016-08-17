@@ -5,6 +5,8 @@
 #include<string>
 
 
+// Generates random car from instruction
+
 struct SXCar;
 
 struct SXBrandInfo{

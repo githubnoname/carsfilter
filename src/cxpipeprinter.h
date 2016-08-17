@@ -7,6 +7,8 @@
 #include"sxcar.h"
 
 
+// Just prints car on FILE.
+
 class CXPipePrinter : public AXPipeJob{
 public:
     CXPipePrinter(FILE *aOut, AXPipeJob *aParent = 0) : AXPipeJob(aParent), mOut(aOut){ }

@@ -4,6 +4,7 @@
 
 #define MIN_BUF_SIZE 16
 
+
 CXFileReader::CXFileReader(FILE *aFile, int aBufSize) : mFile(aFile) {
     mBufSize = std::max(MIN_BUF_SIZE, aBufSize);
     mBuf = new char[mBufSize];

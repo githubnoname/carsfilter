@@ -3,6 +3,10 @@
 
 #include"sxcar.h"
 
+
+// Allows to build chains (or pipes) of processors for cars.
+// Deletes car on end of the pipe.
+
 class AXPipeJob{
 public:
     AXPipeJob(AXPipeJob *aParent = 0) : mNext(0){

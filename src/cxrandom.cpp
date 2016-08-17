@@ -1,5 +1,6 @@
 #include"cxrandom.h"
 
+
 CXRandom::CXRandom() : mGen(std::random_device()()){ }
 
 

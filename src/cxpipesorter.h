@@ -10,6 +10,8 @@
 class AXCmp;
 class SXCar;
 
+// In terms of pipes this pipejob accumulates income values (i.e. doesn't send
+// a car down the pipe), sorts them all in the memory, and sends down one by one.
 
 // In multi-key sorting, we have to do two compares per each cars fields.
 // First one is the usual, second one is eqaulity check to start compare by next key.

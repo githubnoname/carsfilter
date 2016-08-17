@@ -4,6 +4,7 @@
 #include"sxcar.h"
 #include"cxrandom.h"
 
+
 template<typename T>
 T const* random_from_vector(CXRandom &rnd, std::vector<T> const &aVector){
     if(aVector.size() == 0)

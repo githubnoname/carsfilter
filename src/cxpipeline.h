@@ -10,7 +10,6 @@
 
 
 // Pipeline helps to manage jobs in the pipe.
-//
 
 class CXPipeline{
 public:

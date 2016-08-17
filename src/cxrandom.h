@@ -3,6 +3,9 @@
 
 #include<random>
 
+
+// Generates random values from the range.
+
 class CXRandom{
 public:
     CXRandom();

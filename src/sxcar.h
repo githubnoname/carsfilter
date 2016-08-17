@@ -6,6 +6,10 @@
 #include<cmath>
 #include<stdio.h>
 
+
+// Car structure.
+// operator== is used by tests only.
+
 struct SXCar{
     inline SXCar(std::string const &aBrand, std::string const &aModel, int aYear, double aPrice):
         mBrand(aBrand), mModel(aModel), mYear(aYear), mPrice(aPrice){ }
