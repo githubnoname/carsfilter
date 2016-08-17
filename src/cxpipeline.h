@@ -46,12 +46,14 @@ public:
         return p;
     }
 
+    // Adds new sorter to the tail
     CXPipeSorter *addSorter(){
         auto s = new CXPipeSorter(mTail);
         add(s);
         return s;
     }
 
+    // Colects sort rules, doesn't add
     bool addSortRule(std::string const &aType, std::string const &aField){
         std::string op;
         if(aType == "asc")
@@ -65,6 +67,7 @@ public:
         return mSorter->addSortRule(aField, op);
     }
 
+    // Adds collected rules to the tail
     void applySorter(){
         if(mSorter == 0)
             return;

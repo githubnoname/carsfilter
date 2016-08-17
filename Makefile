@@ -11,8 +11,9 @@ CARSGEN_SRC = src/carsgen.cpp src/cxgen.cpp src/cxrandom.cpp
 READERSTEST_SRC = src/test_readers.cpp src/cxfilereader.cpp
 PARSERTEST_SRC  = src/test_parser.cpp src/cxparser.cpp
 FILTERSTEST_SRC = src/test_filters.cpp src/axcmp.cpp src/cxpipefilter.cpp
+SORTTEST_SRC    = src/test_sort.cpp src/axcmp.cpp src/cxpipefilter.cpp src/cxpipesorter.cpp
 
-TESTS = bin/test_readers bin/test_parser bin/test_filters
+TESTS = bin/test_readers bin/test_parser bin/test_filters bin/test_sort
 
 noop =
 space = $(noop) $(noop)
@@ -39,6 +40,9 @@ bin/test_parser: ${PARSERTEST_SRC:src/%.cpp=objs/%.d} ${PARSERTEST_SRC:src/%.cpp
 
 bin/test_filters: ${FILTERSTEST_SRC:src/%.cpp=objs/%.d} ${FILTERSTEST_SRC:src/%.cpp=objs/%.o}
 	${LINK} ${FILTERSTEST_SRC:src/%.cpp=objs/%.o} -o $@
+
+bin/test_sort: ${SORTTEST_SRC:src/%.cpp=objs/%.d} ${SORTTEST_SRC:src/%.cpp=objs/%.o}
+	${LINK} ${SORTTEST_SRC:src/%.cpp=objs/%.o} -o $@
 
 check: ${TESTS}
 	$(subst $(space), && ,$(foreach x,${TESTS},./$(x)))
