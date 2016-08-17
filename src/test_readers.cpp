@@ -20,7 +20,7 @@ bool test_string_reader(){
 
 bool test_file_reader(){
     // Open two handlers: one is for sample, the second one is for reader
-    char const *fname = "src/readers_test.cpp";
+    char const *fname = "src/test_readers.cpp";
     FILE *f = fopen(fname, "r");
     FILE *fr = fopen(fname, "r");
     if(f == 0 || fr == 0)

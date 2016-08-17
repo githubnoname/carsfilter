@@ -6,6 +6,7 @@
 
 
 #define TEST(name) test_func(#name, name)
+
 #define ERROR(...) do {                                                 \
         fprintf(stderr, "%s:%d ", __FILE__, __LINE__);                  \
         fprintf(stderr, __VA_ARGS__);                                   \

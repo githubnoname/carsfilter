@@ -16,6 +16,8 @@ public:
     virtual ~AXPipeJob(){ delete mNext; }
     virtual void processCar(SXCar *) = 0;
     virtual void setNext(AXPipeJob *aNext){ mNext = aNext; }
+
+protected:
     virtual void next(SXCar *aCar){
         if(mNext != 0)
             mNext->processCar(aCar);
@@ -23,7 +25,6 @@ public:
             delete aCar;
     }
 
-protected:
     AXPipeJob *mNext;
 };
 
