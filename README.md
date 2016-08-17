@@ -64,3 +64,17 @@ The resul of the last command will looks like the following (columns are brand, 
      Nissan;Versa;2012;24469.029261
      Nissan;GT-R;2011;22656.491041
      Nissan;Altima;2011;38069.231178
+
+It works even with pipes!
+
+     $ bin/carsgen -l 100 | bin/carsfilter --desc price | head -n10
+     Nissan;GT-R;1991;49391.390709
+     Nissan;Altima;2008;48839.449152
+     Nissan;Altima;2003;47676.767128
+     Nissan;Altima;1982;47553.620285
+     Nissan;Altima;1991;45840.250468
+     Nissan;Cube;2008;45376.725433
+     Nissan;Cube;1990;44654.243636
+     Nissan;Versa;2007;44118.621757
+     Nissan;GT-R;1984;43581.760714
+     Nissan;GT-R;1997;42625.763059
