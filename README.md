@@ -45,7 +45,7 @@ Filter 'Lada' cars that was issued after 2000 year. And sort by year:
      
 Filter only new cars, group result by brand (ascending sort), by year (descending sort), and finally ascending sort by price:
 
-     bin/carsfilter -f cars100 --asc brand --desc issued --asc price
+     bin/carsfilter -f cars100 --filter issued '>' 2010 --asc brand --desc issued --asc price
      
 The resul of the last command will looks like the following (columns are brand, model, issued, price respectively):
 
